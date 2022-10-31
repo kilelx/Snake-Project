@@ -1,7 +1,7 @@
 const canvas = document.querySelector("canvas");
 const ctx = canvas.getContext("2d");
 
-const speed = 500;
+const speed = 800;
 
 const gridElem = 40; // 20 * 20
 let direction = "o";
@@ -49,7 +49,28 @@ window.addEventListener('keydown', (event) => {
             break;
         }
     }
-})
+});
+
+const gameover = () => {
+    if (snake[0][0] > 19 ||
+        snake[0][0] < 0 ||
+        snake[0][1] > 19 ||
+        snake[0][1] < 0
+    ) {
+        return true;
+    } else {
+        /* On extrait la tête du tableau à droite
+        snake[0][0] va être assigné dans head, et tout le reste dans un tableau body
+        */
+        const [head, ...body] = snake;
+        for(let bodyELem of body) {
+            if(bodyElem[0] === head[0] && bodyELem[1] === head[1]) {
+                console.log(bodyElem[0] + bodyElem[1]);
+                console.log("Perdu");
+            }
+        }
+    }
+}
 
 const updateSnakePosition = () => {
     let head;
@@ -73,17 +94,22 @@ const updateSnakePosition = () => {
     }
     snake.unshift(head);
     snake.pop();
+    return gameover();
 }
 
 const move = () => {
 
 drawMap();
-    updateSnakePosition();
-    drawSnake();
-    drawApple();
-    setTimeout(() => {
-        requestAnimationFrame(move);
-    }, 1000 - speed);
+    if(!updateSnakePosition()) {
+        updateSnakePosition();
+        drawSnake();
+        drawApple();
+        setTimeout(() => {
+            requestAnimationFrame(move);
+        }, 1000 - speed);
+    } else {
+        alert("Perdu!")
+    }
 };
 
 requestAnimationFrame(move);
